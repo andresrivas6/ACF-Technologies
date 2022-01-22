@@ -8,10 +8,10 @@ namespace ACF.Infrastructure.Interfaces
     public interface ICliente
     {
         List<Cliente> GetClientes();
-        Cliente GetClienteById(int id);
-        void CreateCliente(Cliente Cliente);
-        void UpdateCliente(Cliente Cliente);
-        void DeleteCliente(Cliente Cliente);
+        Task<Cliente> GetClienteById(int id);
+        Task<int> CreateCliente(Cliente Cliente);
+        Task UpdateCliente(Cliente Cliente);
+        Task DeleteCliente(Cliente Cliente);
 
         bool ClienteExists(int id);
     }

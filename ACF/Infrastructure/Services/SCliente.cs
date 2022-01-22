@@ -22,10 +22,10 @@ namespace ACF.Infrastructure.Services
             {
                 List<Cliente> Clientes = null;
 
-                //using (var context = new EorContext())
-                //{
-                Clientes = _context.Cliente.ToList();
-                //}
+                using (var context = new AcfDbContext())
+                {
+                    Clientes = context.Cliente.ToList();
+                }
 
                 return Clientes;
             }
@@ -33,36 +33,56 @@ namespace ACF.Infrastructure.Services
             {
                 throw ex;
             }
-            finally
-            {
-                _context.Dispose();
-            }
         }
 
-        public Cliente GetClienteById(int id)
+        public async Task<Cliente> GetClienteById(int id)
         {
             try
             {
+
                 var Cliente = new Cliente();
+                using (var context = new AcfDbContext())
+                {
+                    
 
-                Cliente = _context.Cliente.Where(o => o.Id == id)
-                                                .FirstOrDefault();
-                
-
+                    Cliente = await context.Cliente.Where(o => o.Id == id)
+                                                .FirstOrDefaultAsync();
+                    
+                }
                 return Cliente;
+
             }
             catch (Exception ex)
             {
                 throw ex;
             }
-            finally
-            {
-                _context.Dispose();
-            }
 
         }
 
-        public void CreateCliente(Cliente Cliente)
+        public async Task<int> CreateCliente(Cliente Cliente)
+        {
+            int response = 0;
+            try
+            {
+                if (Cliente == null)
+                {
+                    throw new ArgumentNullException(nameof(Cliente));
+                }
+                using (var context = new AcfDbContext())
+                {
+
+                    await context.Cliente.AddAsync(Cliente);
+                }
+                response = await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return response;
+        }
+
+        public async Task DeleteCliente(Cliente Cliente)
         {
             try
             {
@@ -70,31 +90,11 @@ namespace ACF.Infrastructure.Services
                 {
                     throw new ArgumentNullException(nameof(Cliente));
                 }
-
-                _context.Cliente.AddAsync(Cliente);
-                _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                _context.Dispose();
-            }
-        }
-
-        public void DeleteCliente(Cliente Cliente)
-        {
-            try
-            {
-                if (Cliente == null)
+                using (var context = new AcfDbContext())
                 {
-                    throw new ArgumentNullException(nameof(Cliente));
+                    context.Cliente.Remove(Cliente);
+                    await context.SaveChangesAsync();
                 }
-
-                _context.Cliente.Remove(Cliente);
-                _context.SaveChangesAsync();
                 
 
             }
@@ -102,15 +102,12 @@ namespace ACF.Infrastructure.Services
             {
                 throw ex;
             }
-            finally
-            {
-                _context.Dispose();
-            }
+            
         }
 
 
 
-        public void UpdateCliente(Cliente Cliente)
+        public async Task UpdateCliente(Cliente Cliente)
         {
             try
             {
@@ -118,17 +115,16 @@ namespace ACF.Infrastructure.Services
                 {
                     throw new ArgumentNullException(nameof(Cliente));
                 }
-
-                _context.Entry(Cliente).State = EntityState.Modified;
-                _context.SaveChangesAsync();
+                using (var context = new AcfDbContext())
+                {
+                    context.Entry(Cliente).State = EntityState.Modified;
+                    await context.SaveChangesAsync();
+                }
+                
             }
             catch (Exception ex)
             {
                 throw ex;
-            }
-            finally
-            {
-                _context.Dispose();
             }
         }
 
@@ -137,16 +133,16 @@ namespace ACF.Infrastructure.Services
 
             try
             {
-                return _context.Cliente.Any(e => e.Id == id);
+                using (var context = new AcfDbContext())
+                {
+                    return context.Cliente.Any(e => e.Id == id);
+                }
             }
             catch (Exception ex)
             {
                 throw ex;
             }
-            finally
-            {
-                _context.Dispose();
-            }
+            
             
         }
     }

@@ -19,21 +19,21 @@ namespace ACF.Infrastructure
         {
         }
 
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    optionsBuilder.UseSqlServer(@"Server=localhost; initial catalog=acfDb;integrated security=true;");
-        //}
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer(@"Server=localhost; initial catalog=acfDb;integrated security=true;");
+        }
 
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    modelBuilder.Entity<Cliente>(entity =>
-        //    {
-        //        //entity.Property(c => c.Id).hasDa
-        //    });
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Cliente>(entity =>
+            {
+                
+            });
 
-        //    OnModelCreatingPartial(modelBuilder);
-        //}
+            OnModelCreatingPartial(modelBuilder);
+        }
 
-        //partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }
